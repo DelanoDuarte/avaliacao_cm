@@ -1,7 +1,12 @@
 package br.com.avalicaocmmensageria;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Binding.DestinationType;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,11 +23,16 @@ import br.com.avalicaocmmensageria.service.Receiver;
 public class AvaliacaoCmMensageriaApplication {
 
 	static final String topicExchangeName = "avaliacaocm_mensageria";
+	
 	static final String queueName = "avaliacaocm_mensageria_queue";
+	static final String queueName1 = "avaliacaocm_mensageria_queue";
 
 	@Bean
-	org.springframework.amqp.core.Queue queue() {
-		return new org.springframework.amqp.core.Queue(queueName, false);
+	public List<Queue> qs() {
+		return Arrays.asList(
+				new Queue(queueName, false, false, true), 
+				new Queue(queueName1, false, false, true)
+		);
 	}
 
 	@Bean
@@ -30,10 +40,13 @@ public class AvaliacaoCmMensageriaApplication {
 		return new TopicExchange(topicExchangeName);
 	}
 
-	@Bean
-	Binding binding(org.springframework.amqp.core.Queue queue, TopicExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("avaliacaocm_mensageria.#");
-	}
+    @Bean
+    public List<Binding> bs() {
+    	return Arrays.asList(
+    			new Binding(queueName, DestinationType.QUEUE, topicExchangeName, "avaliacaocm_mensageria.#", null),
+    			new Binding(queueName1, DestinationType.QUEUE, topicExchangeName, "", null)
+    	);
+    }
 
 	@Bean
 	SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,

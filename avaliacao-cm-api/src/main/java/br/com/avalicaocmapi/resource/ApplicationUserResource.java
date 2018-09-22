@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.avalicaocmapi.domain.ApplicationUser;
 import br.com.avalicaocmapi.service.ApplicationUserService;
+import io.swagger.annotations.Api;
 
 /**
  * @author Delano Jr
  *
  */
+@Api(value = "User Resource")
 @RestController
 @RequestMapping(value = "/user")
 public class ApplicationUserResource implements Serializable {
