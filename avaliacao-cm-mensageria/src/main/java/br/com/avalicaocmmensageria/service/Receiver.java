@@ -2,6 +2,7 @@ package br.com.avalicaocmmensageria.service;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -13,7 +14,9 @@ import br.com.avalicaocmmensageria.model.User;
 
 @Component
 public class Receiver {
-
+	
+	private Logger logger = Logger.getLogger(Receiver.class.getSimpleName());
+	
 	private CountDownLatch latch = new CountDownLatch(1);
 	static String appUrl = "http://localhost:8080/api/avalicao_cm/user/admin";
 	private RestTemplate restTemplate = new RestTemplate();
@@ -25,7 +28,8 @@ public class Receiver {
 				});
 		List<User> adminUsers = response.getBody();
 		adminUsers.forEach(u -> {
-			System.out.println("Sending Message <" + message + ">" + " to: " + u.getEmail());
+			//System.out.println("Sending Message <" + message + ">" + " to: " + u.getEmail());
+			logger.info("Sending Message <" + message + ">" + " to: " + u.getEmail());
 		});
 	}
 
